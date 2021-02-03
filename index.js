@@ -5,18 +5,11 @@
 // Profesor: Rodolfo Ostos Robles
 //checkout this project already deployed on https://eliuabdiel.github.io/game-of-life/ 
 
-const vancas = document.getElementById('canvas');
+const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d'); //use canvas 2d context
 const size = 600;
 const scale = 10;
 const resolution = size / scale;
-
-let newGen = true;
-let generation = 0;
-let cells;
-
-//setup canvas context
-setup();
 
 //get buttons elements
 const buttonStart = document.getElementById('start')
@@ -24,13 +17,36 @@ const buttonStop = document.getElementById('stop')
 const buttonRandom = document.getElementById('random')
 const buttonClean = document.getElementById('clean') 
 
-//buttons eventListeners 
+let newGen = true;
+let generation = 0;
+let cells;
+let elemLeft;
+let elemTop;
+
+//setup canvas context
+setup();
+
+//this las piece of code is for getting the value of the cell clicked
+elemLeft = canvas.offsetLeft + canvas.clientLeft;
+elemTop = canvas.offsetTop + canvas.clientTop; //first we calculate the position of the canvas
+
+//eventListeners 
+
+//canvas eventListener...each time canvas is clicked
+canvas.addEventListener('click', function(event) {
+     var x = event.pageX - elemLeft, //will get the position of the mouse by substracting the canvas position that 
+        y = event.pageY - elemTop;   //we calculate to the DOM position of the mouse
+        x = Math.floor(x/10) //round the number, in this case to the floor that means if 59.9 then 59 or if 59.2 then 59
+        y = Math.floor(y/10)
+        cells[x][y] = cells[x][y] === true ? false : true; //if the selected cell is already alive and is clicked the cell will die
+        drawCells();
+}, false);
 
 //button 'Iniciar' eventListener
 buttonStart.addEventListener('click', event => {
     newGen = true;
     buttonStop.textContent = 'Pausar'
-    setInterval(newGeneration, 50);
+    setInterval(newGeneration, 100); //new generation every 100 ms
 })
 
 //button 'Pausar' eventListener
@@ -102,9 +118,8 @@ function createCells(){
 function randomCells(){
     for (let y = 0; y < resolution; y++){
         for (let x = 0; x < resolution; x++){
-            if ( Math.random() < 0.5 ) {
-                cells[y][x] = true;
-            }   
+            if ( Math.random() < 0.5 ) 
+                cells[y][x] = true;  
         }
     } 
 }
@@ -116,7 +131,8 @@ function drawCells(){
     context.fillStyle = 'black'
     for (let y = 0; y < resolution; y++){
         for(let x = 0; x < resolution; x++){
-            if (cells[x][y]) context.fillRect(x,y,1,1) //position of the cell are given with x and y, fill react first parameters are the coordenates
+            if (cells[x][y]) 
+                context.fillRect(x,y,1,1) //position of the cell are given with x and y, fill react first parameters are the coordenates
         }
     }
 }
@@ -128,8 +144,10 @@ function step(){
     for (let y = 0; y < resolution; y++){
         for (let x = 0; x < resolution; x++){
             const neighbours = getNeightbourCount(x,y);
-            if (cells[x][y] && neighbours >= 2 && neighbours <= 3) newCells[x][y] = true; //if the cell in cells array that is the las generation can live, the nextgen cell in 'newCell'  array will be true
-            else if (!cells[x][y] && neighbours === 3) newCells[x][y] = true; //a cell that in the canva is death can live if the neighbours are equals to 3
+            if (cells[x][y] && neighbours >= 2 && neighbours <= 3) 
+                newCells[x][y] = true; //if the cell in cells array that is the las generation can live, the nextgen cell in 'newCell'  array will be true
+            else if (!cells[x][y] && neighbours === 3) 
+                newCells[x][y] = true; //a cell that in the canva is death can live if the neighbours are equals to 3
             cellsAlive += cells[x][y] ? 1 : 0  //cellsalive count
         }
     }
@@ -145,8 +163,10 @@ function cellsALiveCount(){
     for (let y = 0; y < resolution; y++){
         for (let x = 0; x < resolution; x++){
             const neighbours = getNeightbourCount(x,y);
-            if (cells[x][y] && neighbours >= 2 && neighbours <= 3) newCells[x][y] = true;
-            else if (!cells[x][y] && neighbours === 3) newCells[x][y] = true;
+            if (cells[x][y] && neighbours >= 2 && neighbours <= 3) 
+                newCells[x][y] = true;
+            else if (!cells[x][y] && neighbours === 3) 
+                newCells[x][y] = true;
             cellsAlive += cells[x][y] ? 1 : 0 
         }
     }
@@ -157,10 +177,14 @@ function getNeightbourCount(x, y){
     let count = 0;
     for (let yy = -1; yy < 2; yy++){
         for (let xx = -1; xx < 2; xx++){
-            if (xx === 0 && yy === 0) continue;
-            if (x + xx < 0 || x + xx > resolution - 1) continue;
-            if (y + yy < 0 || y + yy > resolution - 1) continue;
-            if (cells[x + xx][y + yy]) count++;
+            if (xx === 0 && yy === 0) 
+                continue;
+            if (x + xx < 0 || x + xx > resolution - 1) 
+                continue;
+            if (y + yy < 0 || y + yy > resolution - 1) 
+                continue;
+            if (cells[x + xx][y + yy]) 
+                count++;
         }
     }
     return count;
@@ -170,20 +194,7 @@ function setRetults(generation, cellsAlive){
     document.getElementById('generation').innerHTML = generation;
     document.getElementById('population').innerHTML = cellsAlive;
 }
-//this las piece of code is for getting the value of the cell clicked
-var elemLeft = canvas.offsetLeft + canvas.clientLeft,
-    elemTop = canvas.offsetTop + canvas.clientTop; //first we calculate the position of the canvas
 
-//each time mouse clicked
-canvas.addEventListener('click', function(event) {
-     var x = event.pageX - elemLeft, //will get the position of the mouse by substracting the canvas position that 
-        y = event.pageY - elemTop;   //we calculate to the DOM position of the mouse
-        x = Math.floor(x/10) //round the number, in this case to the floor that means if 59.9 then 59 or if 59.2 then 59
-        y = Math.floor(y/10)
-        cells[x][y] = cells[x][y] === true ? false : true; //if the selected cell is already alive and is clicked the cell will die
-        drawCells();
-}, false);
 
 //based on the canvas rendering idea of Joost Bijlsma https://github.com/jgbijlsma
-//from the repository https://github.com/jgbijlsma/conways-game-of-life 
 //improved by https://github.com/eliuabdiel 
