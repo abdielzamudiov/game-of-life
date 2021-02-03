@@ -4,14 +4,56 @@ const size = 600;
 const scale = 10;
 const resolution = size / scale;
 
+let newGen = true;
 let generation = 0;
 let cells;
 
 setup();
-randomCells();
-drawCells();
 
-setInterval(step, 50);
+const buttonStart = document.getElementById('start')
+const buttonStop = document.getElementById('stop')
+const buttonRandom = document.getElementById('random')
+const buttonClean = document.getElementById('clean') 
+
+buttonStart.addEventListener('click', event => {
+    newGen = true;
+    buttonStop.textContent = 'Pausar'
+    setInterval(newGeneration, 50);
+})
+buttonStop.addEventListener('click', event => {
+    const paused = () => {
+        buttonStop.textContent = 'Pausado'
+        return false
+    }
+    const play = () => {
+        buttonStop.textContent = 'Pausar'
+        return true
+    }
+    newGen = (buttonStop.textContent === 'Pausar') ? paused() : play()
+})
+
+buttonRandom.addEventListener('click',event => {
+    randomCells();
+    resultsConstructor(cellsALiveCount())
+    drawCells();
+})
+
+buttonClean.addEventListener('click', event => {
+    resultsConstructor(0)
+    newGen = false
+    cells = createCells();
+    drawCells();
+})
+
+function resultsConstructor(cellsAlive){
+    generation = 0;
+    buttonStop.textContent = 'Pausar'
+    setRetults(generation, cellsAlive)
+}
+
+function newGeneration(){
+    newGen === true ?  step() : null
+}
 
 function setup(){
     canvas.width = size;
@@ -69,7 +111,19 @@ function step(){
     cells = newCells;
     drawCells();
 }
-
+function cellsALiveCount(){
+    let newCells = createCells();
+    let cellsAlive = 0
+    for (let y = 0; y < resolution; y++){
+        for (let x = 0; x < resolution; x++){
+            const neighbours = getNeightbourCount(x,y);
+            if (cells[x][y] && neighbours >= 2 && neighbours <= 3) newCells[x][y] = true;
+            else if (!cells[x][y] && neighbours === 3) newCells[x][y] = true;
+            cellsAlive += cells[x][y] ? 1 : 0 
+        }
+    }
+    return cellsAlive;
+}
 function getNeightbourCount(x, y){
     let count = 0;
     for (let yy = -1; yy < 2; yy++){
@@ -88,18 +142,13 @@ function setRetults(generation, cellsAlive){
     document.getElementById('population').innerHTML = cellsAlive;
 }
 var elemLeft = canvas.offsetLeft + canvas.clientLeft,
-    elemTop = canvas.offsetTop + canvas.clientTop,
-    elements = [];
-console.log('canvas ofserleft',canvas.offsetLeft,'canvas clientleft', canvas.clientLeft)
-console.log('canvas offsetTop', canvas.offsetTop,'canvas clientTop', canvas.clientTop)
+    elemTop = canvas.offsetTop + canvas.clientTop;
 
 canvas.addEventListener('click', function(event) {
      var x = event.pageX - elemLeft,
         y = event.pageY - elemTop;
-        console.log('click', x,y)
-        x = Math.ceil(x/10)
-        y = Math.ceil(y/10)
-        console.log('click redondeado', x,y)
-        cells[x][y] = true;
+        x = Math.floor(x/10)
+        y = Math.floor(y/10)
+        cells[x][y] = cells[x][y] === true ? false : true;
         drawCells();
 }, false);
