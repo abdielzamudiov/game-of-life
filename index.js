@@ -27,14 +27,14 @@ let firstTime = 0;
 //setup canvas context
 setup();
 
-//this las piece of code is for getting the value of the cell clicked
-elemLeft = canvas.offsetLeft + canvas.clientLeft;
-elemTop = canvas.offsetTop + canvas.clientTop; //first we calculate the position of the canvas
+
 
 //eventListeners 
 
 //canvas eventListener...each time canvas is clicked
-canvas.addEventListener('click', function(event) {
+canvas.addEventListener('click', function(event) { //this piece of code is for getting the value of the cell clicked
+    elemLeft = canvas.offsetLeft + canvas.clientLeft; //first we calculate the position of the canvas
+    elemTop = canvas.offsetTop + canvas.clientTop; 
      var x = event.pageX - elemLeft, //will get the position of the mouse by substracting the canvas position that 
         y = event.pageY - elemTop;   //we calculate to the DOM position of the mouse
         x = Math.floor(x/10) //round the number, in this case to the floor that means if 59.9 then 59 or if 59.2 then 59
