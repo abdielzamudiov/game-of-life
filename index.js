@@ -22,6 +22,7 @@ let generation = 0;
 let cells;
 let elemLeft;
 let elemTop;
+let firstTime = 0;
 
 //setup canvas context
 setup();
@@ -46,7 +47,7 @@ canvas.addEventListener('click', function(event) {
 buttonStart.addEventListener('click', event => {
     newGen = true;
     buttonStop.textContent = 'Pausar'
-    setInterval(newGeneration, 100); //new generation every 100 ms
+    firstTime === 0 ? setInterval(newGeneration, 100) : null; //new generation every 100 ms
 })
 
 //button 'Pausar' eventListener
@@ -88,6 +89,7 @@ function resultsConstructor(cellsAlive){
 
 //function that validates the Interval for each generation
 function newGeneration(){
+    firstTime = 1;
     newGen === true ?  step() : null
 }
 
