@@ -12,4 +12,4 @@
  
 #### Cells can be created with a click too, even if the generations count is on!
 
-#### Checkout the project runing at <a href="https://eliuabdiel.github.io/game-of-life/">the github page</a>
+#### Checkout the project runing at <a target="_blank" href="https://eliuabdiel.github.io/game-of-life/">the github page</a>
