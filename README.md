@@ -6,7 +6,7 @@
   * Buttons
     * Iniciar (Start): generation count starts.
     * Pausar (Pause): generation count is paused.
-    * Aleatorio (Randomize): generates random randomly.
+    * Aleatorio (Randomize): generate cells randomly.
     * Limpiar (Clean): clean the canvas board, no cell is alive.
    
  
